@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SafeCall AI — защита от мошенников</title>
+<meta name="color-scheme" content="dark">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080D18;--bg2:#111827;--ac:#6366F1;--ac2:#06B6D4;--r:#EF4444;--g:#22C55E;--y:#EAB308;--tx:#E5E7EB;--mu:#94A3B8;--bd:#1F2937;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 16px/1.55 Manrope,system-ui,sans-serif;background-image:radial-gradient(600px 300px at 80% -50px,#6366F133,transparent),radial-gradient(500px 300px at 0 200px,#06B6D41a,transparent)}
+a{color:inherit;text-decoration:none}h1,h2,h3{line-height:1.15;margin:0 0 .5em}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#080D18ee;backdrop-filter:blur(8px);border-bottom:1px solid var(--bd)}
+.bar{max-width:1000px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:16px}
+.logo{font-weight:800;font-size:18px;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;font-style:normal;font-size:14px}
+nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}nav a{padding:6px 12px;border-radius:8px;color:var(--mu);white-space:nowrap;font-size:14px;font-weight:600}
+nav a.on{background:var(--bg2);color:#fff;box-shadow:inset 0 0 0 1px var(--ac)}
+main{max-width:1000px;margin:auto;padding:24px 16px 80px}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+a.card:hover{border-color:var(--ac);box-shadow:0 0 24px #6366F133}
+.btn{background:linear-gradient(135deg,var(--ac),#4F46E5);color:#fff;border:0;border-radius:10px;padding:11px 18px;font:600 15px Manrope,sans-serif;cursor:pointer;display:inline-block}
+.btn.g{background:var(--bg2);border:1px solid var(--bd);color:var(--tx)}.btn:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+textarea,input[type=text],input[type=search],select{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:12px;font:inherit}
+textarea{min-height:140px;resize:vertical}.mu{color:var(--mu)}.sm{font-size:13px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--bd);background:var(--bg);color:var(--mu);border-radius:99px;padding:5px 12px;font:600 13px Manrope;cursor:pointer}.chip.on{border-color:var(--ac);color:#fff;background:#6366F133}
+.hero{display:grid;gap:24px;grid-template-columns:1.1fr .9fr;align-items:center;padding:20px 0 32px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(30px,6vw,48px);font-weight:800}
+.sms{background:#0b1220;border:1px solid var(--bd);border-radius:16px 16px 16px 4px;padding:16px;font-size:15px}
+.sms mark{background:#EF444430;color:#fca5a5;border-radius:4px;padding:0 3px}
+.meter{height:10px;border-radius:9px;background:var(--bd);overflow:hidden}.meter b{display:block;height:100%;border-radius:9px;transition:width .8s}
+.big{font-size:56px;font-weight:800;line-height:1}
+.hit{border-left:3px solid var(--r);padding:6px 12px;margin:8px 0;background:var(--bg);border-radius:0 8px 8px 0}
+.spin{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--ac2);border-radius:50%;animation:s .8s linear infinite;margin:18px auto}@keyframes s{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--bg2);border:1px solid var(--ac);padding:10px 18px;border-radius:10px;z-index:9;font-size:14px}
+.warn{border:1px dashed var(--y);color:#fde68a;border-radius:10px;padding:10px 14px;font-size:13px;margin:12px 0}
+.bars{display:flex;gap:6px;align-items:flex-end;height:90px}.bars div{flex:1;text-align:center;font-size:11px;color:var(--mu)}.bars i{display:block;background:linear-gradient(var(--ac2),var(--ac));border-radius:4px 4px 0 0;min-height:2px}
+label{display:block;font-weight:600;margin:12px 0 6px}.err{color:#fca5a5;font-size:14px;margin-top:6px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header><div class="bar"><a class="logo" href="#home"><i>🛡</i>SafeCall AI</a><nav id="nav"></nav></div></header>
+<main id="app"></main>
+<script>
+const $=s=>document.querySelector(s),e=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const G=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(x){return d}},W=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(x){}};
+const toast=t=>{const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),2200)};
+const NAV=[['home','Главная'],['sms','SMS'],['phone','Номер'],['call','Звонок'],['link','Ссылка'],['schemes','Схемы'],['quiz','Тест'],['cab','Кабинет'],['profile','Профиль']];
+const TYPES={sms:'Сообщение',phone:'Номер',call:'Звонок',link:'Ссылка'};
+const LV=s=>s<25?['Низкий риск','var(--g)']:s<55?['Средний риск','var(--y)']:['Высокий риск','var(--r)'];
+const RULES=[
+[/заблокир|блокиров|будет удал|закрыт/i,25,'Угроза блокировки','Мошенники пугают потерей доступа, чтобы вы не успели подумать.'],
+[/срочно|немедленно|в течение \d+ (мин|час)|последнее предупреждение/i,20,'Давление срочностью','Просьба действовать «прямо сейчас» — типичный приём давления.'],
+[/код из (sms|смс)|назовите код|сообщите код|cvv|cvc|парол|пин-?код|номер карты/i,35,'Запрос кодов и данных','Банки и госорганы никогда не просят коды из SMS, пароли и CVV.'],
+[/https?:\/\/|www\.|bit\.ly|t\.me\/|\b[a-z0-9-]+\.(xyz|top|click|site|online|icu)\b/i,20,'Ссылка в сообщении','Ссылки из неожиданных сообщений часто ведут на фишинговые сайты.'],
+[/выиграли|приз|подарок|выплата|компенсаци|бонус|выигрыш/i,20,'Обещание выигрыша или денег','Неожиданные «подарки» — приманка для получения ваших данных.'],
+[/одобрен[ао]? (кредит|заём|займ)|кредит одобрен/i,15,'Неожиданный кредит','Вы не подавали заявку, а кредит «уже одобрен» — повод насторожиться.'],
+[/служб[аы] безопасности|сотрудник (банка|полиции)|следовател|прокуратур/i,20,'Ссылка на «представителя власти»','Мошенники представляются сотрудниками банка или полиции, чтобы вызвать доверие.'],
+[/безопасный счёт|безопасный счет|переведите|перевод на/i,30,'Просьба перевести деньги','Просьба перевести деньги «для сохранности» — признак мошенничества.']];
+function analyze(t){const hits=RULES.filter(r=>r[0].test(t)).map(r=>({w:r[1],t:r[2],d:r[3]}));return{score:Math.min(100,hits.reduce((a,h)=>a+h.w,0)),hits}}
+function save(type,text,score,label){const s=G('sc_s',{save:true});const h=G('sc_h',[]);const safe=s.save?String(text).replace(/\d{4,}/g,'••••').slice(0,80):'—';h.unshift({id:Date.now(),type,text:safe,score,label,date:new Date().toISOString()});W('sc_h',h.slice(0,200))}
+function result(score,hits,type,input,extra=''){const[l,c]=LV(score);save(type,input,score,l);
+return `<div class="card" style="margin-top:16px;border-color:${c}"><div class="row" style="justify-content:space-between"><div><div class="big" style="color:${c}">${score}<span class="sm mu">/100</span></div><b style="color:${c}">${l}</b></div><span class="mu sm">сохранено в историю</span></div>
+<div class="meter" style="margin:14px 0"><b style="width:${score}%;background:${c}"></b></div>
+${hits.length?`<h3>Найденные признаки</h3>`+hits.map(h=>`<div class="hit"><b>${e(h.t)}</b> <span class="mu sm">+${h.w}</span><div class="sm mu">${e(h.d)}</div></div>`).join(''):'<p class="mu">Явных признаков не найдено.</p>'}${extra}
+<h3>Что делать</h3><ul class="mu"><li>Не переходите по ссылкам и не называйте коды.</li><li>Перезвоните в организацию по номеру с официального сайта или с карты.</li><li>Сомневаетесь — прервите разговор и посоветуйтесь с близкими.</li></ul>
+<div class="warn">Отсутствие признаков не означает, что это безопасно. Это простая локальная проверка по правилам, а не искусственный интеллект, и она не даёт 100% защиты.</div></div>`}
+function run(box,fn){box.innerHTML='<div class="card" style="margin-top:16px;text-align:center"><div class="spin"></div><span class="mu">Анализируем…</span></div>';setTimeout(()=>{box.innerHTML=fn()},900)}
+
+/* Pages */
+const SMSX=['Ваш счёт заблокирован! Срочно подтвердите данные: http://kaspi-secure.top/login и назовите код из SMS.','Вы выиграли приз 500 000 ₸! Перейдите по ссылке bit.ly/x9 и оплатите доставку.','Здравствуйте! Ваш заказ передан курьеру, доставка завтра с 10 до 18.'];
+const P={
+home(){const rows=G('sc_h',[]);return `<section class="hero"><div><h1>Распознавай мошенников до того, как станет слишком поздно</h1><p class="mu">SafeCall AI проверяет SMS, номера, звонки и ссылки прямо в браузере. Ваши данные никуда не отправляются.</p><a class="btn" href="#sms">Начать проверку</a></div>
+<div class="sms"><div class="mu sm" style="margin-bottom:6px">Пример сообщения — что мы подсветили бы:</div><mark>Ваш счёт заблокирован.</mark> <mark>Срочно</mark> перейдите по <mark>ссылке</mark> и <mark>назовите код из SMS</mark>, иначе доступ будет закрыт.</div></section>
+<div class="grid">${[['sms','💬','SMS и сообщения','Найдём давление, угрозы и запросы кодов'],['phone','📞','Номер телефона','Формат +7 и демо-база жалоб'],['call','🎧','Звонки','Анализ записи и расшифровки'],['link','🔗','Ссылки','Признаки фишинга в адресе']].map(c=>`<a class="card" href="#${c[0]}"><div style="font-size:26px">${c[1]}</div><h3>${c[2]}</h3><span class="mu sm">${c[3]}</span></a>`).join('')}</div>
+<h2 style="margin-top:36px">Ваша статистика</h2><div class="grid"><div class="card"><div class="big">${rows.length}</div><span class="mu">проверок</span></div><div class="card"><div class="big" style="color:var(--r)">${rows.filter(r=>r.score>=25).length}</div><span class="mu">подозрительных случаев</span></div><div class="card"><div class="big" style="color:var(--ac2)">${rows.filter(r=>Date.now()-r.id<864e5).length}</div><span class="mu">за последние сутки</span></div></div>
+<h2 style="margin-top:36px">Как это работает</h2><div class="grid">${['Вставьте текст, номер или ссылку','Правила на JavaScript считают баллы риска','Получите признаки, объяснения и советы'].map((t,i)=>`<div class="card"><b style="color:var(--ac2)">Шаг ${i+1}</b><p class="mu">${t}</p></div>`).join('')}</div>
+<h2 style="margin-top:36px">Популярные схемы</h2><div class="row">${SCH.slice(0,4).map(s=>`<a class="chip" href="#schemes">${e(s.t)}</a>`).join('')}</div>
+<div class="card" style="margin-top:36px;text-align:center"><h2>Получили странное сообщение?</h2><a class="btn" href="#sms">Проверить сейчас</a></div>`},
+sms(){return `<h1>Проверка сообщений</h1><p class="mu">Вставьте текст из SMS, WhatsApp или Telegram.</p><textarea id="t" placeholder="Текст сообщения"></textarea><div class="err" id="er"></div>
+<div class="row" style="margin-top:10px"><button class="btn" onclick="doSms()">Анализировать</button>${SMSX.map((x,i)=>`<button class="chip" onclick="$('#t').value=SMSX[${i}]">Пример ${i+1}</button>`).join('')}</div><div id="out"></div>`},
+phone(){return `<h1>Проверка номера</h1><p class="mu">Поддерживаются номера Казахстана: +7 7XX XXX XX XX.</p><input type="text" id="n" inputmode="tel" placeholder="+7 700 111 22 33"><div class="err" id="er"></div>
+<div class="row" style="margin-top:10px"><button class="btn" onclick="doPhone()">Проверить</button><button class="chip" onclick="$('#n').value='+7 700 111 22 33'">Демо-номер</button></div><div class="warn">Все записи в базе — демонстрационные и не относятся к реальным людям.</div><div id="out"></div>`},
+call(){return `<h1>Проверка звонка</h1><p class="mu">Загрузите запись (MP3, WAV, M4A) или запустите демо-сценарий.</p><div class="card"><input type="file" id="f" accept=".mp3,.wav,.m4a,audio/*" onchange="pick()"><div id="fi" style="margin-top:10px"></div><div class="row" style="margin-top:10px"><button class="btn" onclick="doCall()">Начать анализ</button><button class="btn g" onclick="demoCall()">Демо-сценарий</button></div></div>
+<div class="warn">Ограничение: браузер не умеет расшифровывать загруженный файл без сервера, поэтому для вашей записи мы не покажем распознанный текст. Для демонстрации используйте готовый сценарий.</div><div id="out"></div>`},
+link(){return `<h1>Проверка ссылки</h1><input type="text" id="u" placeholder="https://example.com/..."><div class="err" id="er"></div><div class="row" style="margin-top:10px"><button class="btn" onclick="doLink()">Проверить</button><button class="chip" onclick="$('#u').value='http://kaspi-secure-login.top/verify?id=1'">Пример</button></div><div class="warn">Проверка идёт только по виду адреса. Репутацию домена в интернете мы не проверяем.</div><div id="out"></div>`},
+schemes(){return `<h1>База схем мошенничества</h1><input type="search" id="q" placeholder="Поиск" oninput="drawSch()"><div class="row" style="margin:12px 0" id="cats"></div><div class="grid" id="sl"></div>`},
+quiz(){QZ={i:0,s:0,a:null};return '<div id="qz"></div>'},
+cab(){const h=G('sc_h',[]);return `<h1>Кабинет</h1><div class="grid"><div class="card"><div class="big">${h.length}</div><span class="mu">проверок</span></div><div class="card"><div class="big" style="color:var(--r)">${h.filter(r=>r.score>=25).length}</div><span class="mu">подозрительных</span></div></div>
+<div class="grid" style="margin-top:12px"><div class="card"><h3>По категориям</h3>${h.length?Object.keys(TYPES).map(k=>{const n=h.filter(r=>r.type==k).length;return `<div class="sm">${TYPES[k]}: ${n}<div class="meter"><b style="width:${n/h.length*100}%;background:var(--ac)"></b></div></div>`}).join(''):'<p class="mu">Пока нет данных.</p>'}</div>
+<div class="card"><h3>Активность за 7 дней</h3><div class="bars">${[...Array(7)].map((_,i)=>{const d=new Date(Date.now()-(6-i)*864e5).toDateString(),n=h.filter(r=>new Date(r.id).toDateString()==d).length;return `<div><i style="height:${Math.min(70,n*14)}px"></i>${n}</div>`}).join('')}</div></div></div>
+<h2 style="margin-top:28px">История</h2><div class="row"><select id="hf" style="width:auto" onchange="drawHist()"><option value="">Все типы</option>${Object.entries(TYPES).map(k=>`<option value="${k[0]}">${k[1]}</option>`).join('')}</select><button class="btn g" onclick="clearH()">Очистить всё</button></div><div id="hl" style="margin-top:12px"></div>`},
+profile(){const s=G('sc_s',{save:true,name:''});return `<h1>Профиль и настройки</h1><div class="card"><label for="nm">Имя</label><input type="text" id="nm" value="${e(s.name||'')}"><label><input type="checkbox" id="sv" ${s.save?'checked':''}> Сохранять фрагмент текста в истории (цифры скрываются)</label><button class="btn" style="margin-top:12px" onclick="saveS()">Сохранить</button></div><div class="warn">Все данные хранятся только в вашем браузере (localStorage). Пароли, коды и реквизиты не сохраняются. Сервис не даёт 100% защиты.</div>`}};
+
+/* Actions */
+function doSms(){const t=$('#t').value.trim();if(t.length<10){$('#er').textContent='Введите хотя бы 10 символов текста.';return}$('#er').textContent='';run($('#out'),()=>{const a=analyze(t);return result(a.score,a.hits,'sms',t)})}
+const DB={'77001112233':[14,'Звонки «от службы безопасности банка»'],'77771234567':[6,'Фишинговые SMS'],'77470001122':[27,'Ложные выигрыши и инвестиции']};
+function doPhone(){let d=$('#n').value.replace(/\D/g,'');if(d.length==11&&d[0]=='8')d='7'+d.slice(1);if(!/^7\d{10}$/.test(d)){$('#er').textContent='Неверный формат. Пример: +7 700 111 22 33.';return}$('#er').textContent='';
+run($('#out'),()=>{const r=DB[d],num='+'+d.replace(/(\d)(\d{3})(\d{3})(\d{2})(\d{2})/,'$1 $2 $3 $4 $5'),sc=r?Math.min(90,r[0]*3):0;save('phone',num,sc,r?LV(sc)[0]:'Недостаточно данных');
+return `<div class="card" style="margin-top:16px"><h2>${num}</h2>${r?`<p>Статус: <b style="color:${LV(sc)[1]}">${r[0]>=10?'много жалоб':'есть жалобы'}</b> (демо)</p><p>Жалоб: <b>${r[0]}</b></p><p>Категория: ${r[1]}</p>`:'<p><b>Информации о номере пока недостаточно.</b></p><p class="mu">Это не значит, что номер безопасен.</p>'}<ul class="mu"><li>Не называйте коды и данные карты.</li><li>Не переводите деньги по просьбе звонящего.</li><li>Перезвоните в организацию по официальному номеру.</li></ul><span class="mu sm">Запись из демонстрационной базы, не реальные данные.</span></div>`})}
+function pick(){const f=$('#f').files[0];$('#fi').innerHTML=f?`${e(f.name)} · ${(f.size/1048576).toFixed(2)} МБ <button class="chip" onclick="$('#f').value='';pick()">Удалить</button>`:''}
+function doCall(){const f=$('#f').files[0];if(!f){toast('Сначала выберите аудиофайл');return}
+if(!/\.(mp3|wav|m4a)$/i.test(f.name)){toast('Нужен файл MP3, WAV или M4A');return}
+run($('#out'),()=>`<div class="card" style="margin-top:16px"><h3>Файл загружен, но расшифровать его нельзя</h3><p class="mu">Распознавание речи из файлов требует сервера, а этот сайт работает только в браузере. Мы не будем изображать результат. Нажмите «Демо-сценарий», чтобы увидеть, как выглядит анализ.</p></div>`)}
+function demoCall(){const t='Здравствуйте, я сотрудник службы безопасности банка. С вашего счёта пытаются списать деньги. Срочно назовите код из SMS и переведите деньги на безопасный счёт.';run($('#out'),()=>{const a=analyze(t);return `<div class="card" style="margin-top:16px"><span class="warn" style="display:inline-block;margin:0 0 8px">Демо-сценарий, не ваша запись</span><h3>Текст разговора</h3><p class="mu">${e(t)}</p></div>`+result(a.score,a.hits,'call','Демо-сценарий',`<p class="mu sm">Запрос личных данных и перевод денег найдены в тексте.</p>`)})}
+function doLink(){let u=$('#u').value.trim(),url;try{url=new URL(/^[a-z]+:\/\//i.test(u)?u:'http://'+u);if(!url.hostname.includes('.')&&!/^\[/.test(url.hostname))throw 0}catch(x){$('#er').textContent='Некорректный адрес. Пример: https://example.com';return}$('#er').textContent='';
+const h=url.hostname,H=[],add=(w,t,d)=>H.push({w,t,d});
+if(url.protocol!='https:')add(15,'Нет HTTPS','Соединение не защищено шифрованием.');
+if(/^\d+\.\d+\.\d+\.\d+$/.test(h))add(35,'IP вместо домена','Честные сайты почти всегда используют доменное имя.');
+if(h.includes('xn--'))add(25,'Punycode в домене','Так маскируют адреса под известные бренды.');
+if(/(bank|kaspi|halyk|egov|gov|login|secure|verify|pay|update|prize|gift)/i.test(h))add(20,'Подозрительные слова в домене','Название бренда или слова вроде «secure» часто копируют. Сверьте с официальным адресом.');
+if((h.match(/-/g)||[]).length>=2)add(10,'Много дефисов','Типично для поддельных доменов.');
+if(h.split('.').length>4)add(15,'Много поддоменов','Настоящий домен может скрываться в конце.');
+if(/\.(xyz|top|click|site|online|icu)$/i.test(h))add(20,'Дешёвая доменная зона','Такие зоны чаще используют для фишинга.');
+if(u.includes('@'))add(25,'Символ @ в адресе','Он может скрывать настоящий адрес.');
+if(u.length>75)add(15,'Очень длинная ссылка','Длинные адреса прячут подозрительные части.');
+run($('#out'),()=>{const s=Math.min(100,H.reduce((a,x)=>a+x.w,0));return `<div class="card" style="margin-top:16px;word-break:break-all"><b>${e(url.href)}</b></div>`+result(s,H,'link',url.href,'<p class="mu sm">Репутацию домена в интернете мы не проверяли. Не открывайте подозрительные ссылки.</p>')})}
+
+const SCH=[
+{c:'Банки',t:'«Служба безопасности банка»',d:'Звонят от имени банка и просят «спасти» деньги.',e:'«С вашей карты пытаются снять деньги. Назовите код из SMS.»',s:['Срочность','Просьба назвать код'],p:'Положите трубку и перезвоните по номеру с карты.'},
+{c:'Полиция',t:'Ложный следователь',d:'«Следователь» заявляет, что на вас оформляют кредит.',e:'«Переведите деньги на безопасный счёт, это тайна следствия.»',s:['Запрет рассказывать другим','Перевод денег'],p:'Полиция не просит переводить деньги. Позвоните 102 сами.'},
+{c:'Фишинг',t:'SMS со ссылкой',d:'Сообщение о блокировке карты или аккаунта со ссылкой.',e:'«Ваш аккаунт заблокирован: kaspi-secure.top»',s:['Странный домен','Угроза блокировки'],p:'Не переходите по ссылке, откройте официальное приложение.'},
+{c:'Инвестиции',t:'Гарантированный доход',d:'Обещают огромную прибыль в закрытом чате.',e:'«30% в месяц гарантированно. Вход 50 000 ₸.»',s:['Гарантии доходности','Давление «успей»'],p:'Проверяйте лицензию на сайте регулятора.'},
+{c:'Объявления',t:'Предоплата за товар',d:'Продавец просит перевести предоплату и пропадает.',e:'«Цена снижена, отправлю после предоплаты.»',s:['Цена ниже рынка','Нет личной встречи'],p:'Платите только при получении товара.'},
+{c:'Доставка',t:'Платёж за посылку',d:'«Курьер» просит доплатить за доставку по ссылке.',e:'«Посылка задержана. Оплатите 790 ₸: ссылка»',s:['Вы не ждёте посылку','Поддельная ссылка'],p:'Проверяйте трек в приложении магазина.'},
+{c:'Соцсети',t:'«Это я, выручи»',d:'Взломанный аккаунт друга просит перевести деньги.',e:'«Срочно нужны 50 000 ₸, верну завтра.»',s:['Деньги в срочном порядке','Не хочет звонить'],p:'Позвоните другу по известному номеру.'},
+{c:'Госуслуги',t:'Фальшивый egov',d:'Просят обновить данные на поддельном сайте.',e:'«Обновите данные на egov-help.top, иначе доступ закроют.»',s:['Не официальный домен','Срочность'],p:'Заходите на egov.kz только вручную.'}];
+const SC=[...new Set(SCH.map(s=>s.c))];let sc_f='';
+function drawSch(){const q=($('#q')?.value||'').toLowerCase();$('#cats').innerHTML=['',...SC].map(c=>`<button class="chip ${c==sc_f?'on':''}" onclick="sc_f='${c}';drawSch()">${c||'Все'}</button>`).join('');
+const l=SCH.filter(s=>(!sc_f||s.c==sc_f)&&JSON.stringify(s).toLowerCase().includes(q));$('#sl').innerHTML=l.length?l.map(s=>`<div class="card"><span class="chip">${s.c}</span><h3 style="margin-top:8px">${s.t}</h3><p class="mu sm">${s.d}</p><div class="sms sm">${s.e}</div><p class="sm"><b>Признаки:</b> ${s.s.join(', ')}</p><p class="sm" style="color:var(--g)"><b>Защита:</b> ${s.p}</p></div>`).join(''):'<p class="mu">Ничего не найдено. Измените запрос или категорию.</p>'}
+const QS=[['Банк: «Карта заблокирована. Назовите код из SMS для разблокировки».',0,'Банк никогда не просит коды из SMS.'],['«Код входа в Telegram: 48213». Вы только что сами входили в аккаунт.',1,'Если вы сами запросили код, всё нормально. Главное — никому его не называть.'],['«Следователь»: на вас оформляют кредит, переведите деньги на безопасный счёт.',0,'«Безопасных счетов» не существует.'],['«Вы выиграли iPhone! Оплатите доставку 990 ₸ по bit.ly/x9».',0,'Выигрыш в лотерее, в которой вы не участвовали, — приманка.'],['«Списание 4 500 ₸ в магазине. Если это не вы — позвоните по номеру на обратной стороне карты».',1,'Нет ссылок и кодов, номер вы берёте с карты сами.'],['Объявление: «PS5 за полцены. Нужна предоплата, встретиться не могу».',2,'Ниже рынка и нет встречи — повод насторожиться, но проверить нужно.'],['«Инвестиции: 30% в месяц гарантированно, закрытый чат, вход 50 000 ₸».',0,'Гарантированной высокой доходности не бывает.'],['«Оператор: тариф изменится с 1-го числа. Подробности в приложении оператора».',2,'Ссылки нет, но сверьте информацию в своём приложении.'],['«Госуслуги: обновите данные на egov-kz-help.top, иначе доступ закроют».',0,'Домен не официальный, плюс давление.'],['Друг в WhatsApp с нового номера: «Это я, срочно переведи 50 000 ₸».',2,'Позвоните другу по старому номеру и убедитесь.']];
+let QZ;function drawQ(){const q=QS[QZ.i];if(!q){const p=Math.round(QZ.s/QS.length*100);$('#qz').innerHTML=`<div class="card"><h1>Результат: ${p}%</h1><p class="mu">Верных ответов: ${QZ.s} из ${QS.length}</p><button class="btn" onclick="QZ={i:0,s:0,a:null};drawQ()">Пройти заново</button></div>`;return}
+$('#qz').innerHTML=`<h1>Проверь свою бдительность</h1><div class="meter"><b style="width:${QZ.i/QS.length*100}%;background:var(--ac2)"></b></div><p class="mu sm">Вопрос ${QZ.i+1} из ${QS.length} · баллов: ${QZ.s*10}</p><div class="sms">${e(q[0])}</div><div class="row" style="margin-top:12px">${['Мошенничество','Безопасно','Подозрительно'].map((t,i)=>`<button class="btn g" ${QZ.a!==null?'disabled':''} onclick="ans(${i})" style="${QZ.a!==null&&i==q[1]?'border-color:var(--g)':QZ.a==i?'border-color:var(--r)':''}">${t}</button>`).join('')}</div>${QZ.a!==null?`<div class="card" style="margin-top:12px"><b style="color:${QZ.a==q[1]?'var(--g)':'var(--r)'}">${QZ.a==q[1]?'Верно!':'Неверно'}</b><p class="mu">${q[2]}</p><button class="btn" onclick="QZ.i++;QZ.a=null;drawQ()">${QZ.i+1<QS.length?'Дальше':'Результат'}</button></div>`:''}`}
+function ans(i){if(QZ.a!==null)return;QZ.a=i;if(i==QS[QZ.i][1])QZ.s++;drawQ()}
+function drawHist(){const h=G('sc_h',[]),f=$('#hf').value,l=h.filter(r=>!f||r.type==f);$('#hl').innerHTML=l.length?l.map(r=>`<div class="card" style="margin-bottom:8px"><div class="row" style="justify-content:space-between"><b>${TYPES[r.type]} · <span style="color:${LV(r.score)[1]}">${r.score}</span></b><button class="chip" onclick="delH(${r.id})">Удалить</button></div><div class="sm mu">${e(r.text)}</div><div class="sm mu">${new Date(r.date).toLocaleString('ru-RU')} · ${e(r.label)}</div></div>`).join(''):'<div class="card mu">Здесь пока пусто. <a href="#sms" style="color:var(--ac2)">Проверьте первое сообщение</a>.</div>'}
+function delH(id){if(confirm('Удалить запись?')){W('sc_h',G('sc_h',[]).filter(r=>r.id!=id));route();toast('Запись удалена')}}
+function clearH(){if(confirm('Очистить всю историю?')){W('sc_h',[]);route();toast('История очищена')}}
+function saveS(){W('sc_s',{save:$('#sv').checked,name:$('#nm').value.trim().slice(0,40)});toast('Настройки сохранены')}
+function route(){const p=(location.hash||'#home').slice(1);const k=P[p]?p:'home';$('#nav').innerHTML=NAV.map(n=>`<a href="#${n[0]}" class="${n[0]==k?'on':''}">${n[1]}</a>`).join('');$('#app').innerHTML=P[k]();if(k=='schemes')drawSch();if(k=='quiz')drawQ();if(k=='cab')drawHist();window.scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+</script></body></html>
